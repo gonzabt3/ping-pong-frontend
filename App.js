@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Draggable from 'react-native-draggable';
 import { Dimensions } from 'react-native';
 
 import socketIOClient from "socket.io-client";
@@ -54,9 +55,24 @@ const App: () => React$Node = () => {
     setWindowWidth(obj.width);
     setWindowHeight(obj.height)
   }
+
+  const onDragHandler = (event, gestureState) => {
+    console.log(gestureState.moveX)
+    // console.log(event.locationY)
+
+  }
+
   return (
     <>
       <View style={{ height:'100%' }} onLayout={onLayoutEvent} >
+        <Draggable 
+          x={200} 
+          y={670}
+          minY={670}
+          maxY={670}
+          renderColor='red'
+          onDrag={onDragHandler}
+        />
         <View style={{
             right: ballPostionX,
             top: ballPositionY,
