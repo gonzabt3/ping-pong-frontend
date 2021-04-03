@@ -22,7 +22,7 @@ const App: () => React$Node = () => {
   useEffect(() => {
     socket = socketIOClient(ENDPOINT);
     socket.on("FromAPI", data => {
-      // const newPosition = convertPosition(data);
+      // const newPosition = convertPositionIn(data);
       // if (newPosition.y && newPosition.x){
       //   setBallPositionY(newPosition.y);
       //   setBallPostionX(newPosition.x);
@@ -31,15 +31,19 @@ const App: () => React$Node = () => {
 
   }, []);
 
-  const convertPosition = (position) => {
+  const convertPositionIn = (position) => {
     return {
-      y: convertionValue(400, 735-50, position.y),
-      x: convertionValue(-200, 392-50, position.x)
+      y: convertValueIn(400, 735-50, position.y),
+      x: convertValueIn(-200, 392-50, position.x)
     }
   }
 
-  const convertionValue = (serverValue, frontValue, positionValue) => {
+  const convertValueIn = (serverValue, frontValue, positionValue) => {
     return (frontValue*positionValue)/serverValue
+  }
+
+  const convertValueOut = (serverValue, frontValue, positionValue) => {
+    return (serverValue*positionValue)/frontValue
   }
 
   const onLayoutEvent = (event) =>  {
@@ -56,7 +60,8 @@ const App: () => React$Node = () => {
 
   const onDragHandler = (event, gestureState) => {
     console.log(gestureState.moveX)
-    socket.emit('playerPosition', gestureState.moveX);
+    const position = convertValueOut(200, 392,gestureState.moveX)
+    socket.emit('playerPosition', position);
   }
 
   return (
