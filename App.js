@@ -3,14 +3,12 @@ import Draggable from 'react-native-draggable';
 import { Dimensions } from 'react-native';
 
 import socketIOClient from "socket.io-client";
-const ENDPOINT = "http://192.168.1.40:4001";
+const ENDPOINT = "http://192.168.1.38:4001";
+let socket = null;
 
 import {
   StyleSheet,
-  View,
-  Text,
-  Button,
-
+  View
 } from 'react-native';
 
 const App: () => React$Node = () => {
@@ -22,13 +20,13 @@ const App: () => React$Node = () => {
   const [time, setTime] = useState(Date.now());
 
   useEffect(() => {
-    const socket = socketIOClient(ENDPOINT);
+    socket = socketIOClient(ENDPOINT);
     socket.on("FromAPI", data => {
-      const newPosition = convertPosition(data);
-      setBallPositionY(newPosition.y);
-      setBallPostionX(newPosition.x);
-      console.log("XXX", ballPostionX)
-      console.log("YYY", ballPositionY)
+      // const newPosition = convertPosition(data);
+      // if (newPosition.y && newPosition.x){
+      //   setBallPositionY(newPosition.y);
+      //   setBallPostionX(newPosition.x);
+      // }
     });
 
   }, []);
@@ -58,8 +56,7 @@ const App: () => React$Node = () => {
 
   const onDragHandler = (event, gestureState) => {
     console.log(gestureState.moveX)
-    // console.log(event.locationY)
-
+    socket.emit('playerPosition', gestureState.moveX);
   }
 
   return (
